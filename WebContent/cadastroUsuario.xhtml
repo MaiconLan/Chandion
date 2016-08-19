@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+</h:head>
+<h:body>
+	<h2>Cadastrar</h2>
+	<h:form>
+		<f:metadata>
+			<f:viewParam name="id" value="#{userBean.usuario.idUsuario}" />
+			<f:event type="preRenderView" listener="#{userBean.carregar(id)}" />
+		</f:metadata>
+
+		<p:growl id="growl" showDetail="false" sticky="false" />
+		<h:panelGrid columns="2">
+
+			<p:outputLabel id="login" value="Usuario: " />
+			<p:inputText for="login" value="#{userBean.usuario.usuario}"
+				required="true" requiredMessage="O campo Usuário é obrigatório" />
+
+			<p:outputLabel id="senha" value="Senha: " />
+			<p:password for="senha" value="#{userBean.usuario.senha}"
+				feedback="true" required="true"
+				requiredMessage="O campo Senha é obrigatório" />
+
+			<p:commandButton id="save" update="@form" value="Cadastrar"
+				action="#{userBean.salvar}"></p:commandButton>
+		</h:panelGrid>
+
+	</h:form>
+</h:body>
+</html>

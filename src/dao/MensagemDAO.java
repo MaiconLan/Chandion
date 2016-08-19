@@ -7,20 +7,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import connection.ConnectionFactory;
-import exemplos.Mensagem;
+import model.Mensagem;
+import controller.ConnectionFactory;
 
 public class MensagemDAO {
 
-	public void enviaMsg(Mensagem msg) throws SQLException {
+	public void enviaMensagem(Mensagem msg) throws SQLException {
 
 		Connection con = ConnectionFactory.getConnection();
-		String sql = "INSERT INTO msg(nom_msg, nom_remet, data_envio) VALUES (?, ?, ?);";
+		String sql = "INSERT INTO mensagem(nom_mensagem, nom_usuario, data_envio) VALUES (?, ?, ?);";
+
 		PreparedStatement stmt = con.prepareStatement(sql);
 
 		stmt.setString(1, msg.getMensagem());
-		stmt.setString(2, msg.getRemetente());
-		stmt.setTimestamp(3, new java.sql.Timestamp(java.util.Calendar.getInstance().getTimeInMillis()));
+		stmt.setString(2, msg.getUsuario());
+		stmt.setTimestamp(3, getCurrentTimeStamp());
 
 		stmt.execute();
 		stmt.close();
@@ -28,32 +29,40 @@ public class MensagemDAO {
 	}
 
 	public List<Mensagem> listarMensagem() throws SQLException {
-		List<Mensagem> lista = new ArrayList<Mensagem>();
+		String sql = "SELECT cod_mensagem, nom_mensagem, nom_usuario, data_envio FROM mensagem";
 
-		String sql = "SELECT cod_msg, nom_msg, nom_remet, data_envio FROM msg;";
-		Connection con = ConnectionFactory.getConnection();
+		Connection connection = ConnectionFactory.getConnection();
+		List<Mensagem> mensagens = new ArrayList<Mensagem>();
 
 		try {
-			PreparedStatement stmt = con.prepareStatement(sql);
+			PreparedStatement stmt = connection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Mensagem msg = new Mensagem();
+				Mensagem mensagem = new Mensagem();
+				mensagem.setIdMensagem(rs.getLong("cod_mensagem"));
+				mensagem.setMensagem(rs.getString("nom_mensagem"));
+				mensagem.setUsuario(rs.getString("nom_usuario"));
+				mensagem.setDataEnvio(rs.getTimestamp("data_envio"));
 
-				msg.setId(rs.getInt("cod_msg"));
-				msg.setMensagem(rs.getString("nom_msg"));
-				msg.setRemetente(rs.getString("nom_remet"));
-				msg.setData(rs.getTimestamp("data_envio"));
-				lista.add(msg);
+				mensagens.add(mensagem);
 			}
+
+			stmt.execute();
+			stmt.close();
+			connection.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-
-		} finally {
-			con.close();
 		}
-		return lista;
+
+		return mensagens;
 	}
 
+	private static java.sql.Timestamp getCurrentTimeStamp() {
+
+		java.util.Date today = new java.util.Date();
+		return new java.sql.Timestamp(today.getTime());
+
+	}
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>Teste</title>
+</h:head>
+
+<h:body>
+	<h:form>
+		<p:dataList value="#{mensagemBean.lista}" var="msg" type="definition">
+			<f:facet name="header">
+            Definition
+        </f:facet>
+        #{msg.usuario} : #{msg.dataEnvio}
+        <br/>
+        #{msg.mensagem}
+   
+		</p:dataList>
+
+		<!-- Mensagem obrigatória -->
+		<p:growl id="growl" showDetail="true" sticky="true" />
+		<h2>Envie a Mensagem</h2>
+		<!-- Alinhamento dos campos! -->
+		<h:panelGrid columns="2">
+			<h:outputText value="Nome: " />
+			<p:inputText value="#{loginMb.user}" required="true"
+				requiredMessage="O campo nome é obrigatório" />
+
+			<p:outputLabel value="Mensagem: " />
+			<p:inputTextarea rows="6" cols="33"
+				value="#{mensagemBean.mensagem.mensagem}" />
+
+			<p:commandButton update="@form" value="Enviar"
+				action="#{mensagemBean.enviarMensagem()}"></p:commandButton>
+		</h:panelGrid>
+
+	</h:form>
+</h:body>
+
+</html>
